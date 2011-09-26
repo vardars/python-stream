@@ -16,7 +16,7 @@ setup(
     author='Aristotelis Mikropoulos',
     author_email='amikrop@gmail.com',
     url='http://code.google.com/p/python-stream/',
-    download_url='',
+    download_url='http://code.google.com/p/python-stream/downloads/list',
     platforms=['OS Independent (Written in an interpreted language)'],
     license='GPL',
     py_modules=['stream']
