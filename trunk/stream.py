@@ -15,6 +15,9 @@ class Stream(object):
     def empty(self):
         return self.head_value is None
 
+    def __nonzero__(self):
+        return not self.empty()
+
     def head(self):
         if self.empty():
             raise StreamError('cannot get the head of an empty stream')
@@ -41,13 +44,28 @@ class Stream(object):
             except StreamError:
                 raise IndexError('stream index out of range')
         elif isinstance(key, slice):
-            if self.empty():
+            start = key.start
+            stop = key.stop
+            if self.empty() or (start is None and stop is None):
                 return self
-            if not key.stop:
-                return Stream()
+            length = self.length()
             this = self
-            return Stream(self.head(),
-                          lambda: this.tail()[:key.stop - 1])
+            if start:
+                if start < 0:
+                    start = length + start
+                this = this.drop(start)
+            if stop is None:
+                stop = length
+            elif stop == 0:
+                return Stream()
+            elif stop < 0:
+                stop = length + stop
+            if start >= stop:
+                return Stream()
+            if start and stop:
+                stop = stop - start
+            return Stream(this.head(),
+                          lambda: this.tail()[:stop - 1])
 
     def item(self, n):
         return self[n]
